@@ -158,30 +158,32 @@ window.onload = function() {
     document.getElementById('searchByTitle').addEventListener('click', ()=>getSearchMode('searchByTitle'));
     document.getElementById('searchByCategory').addEventListener('click', ()=>getSearchMode('searchByCategory'));
 
-    function search(value){
-        let table = '';
-        for(let i=0;i<dataProducts.length;i++){
-            let total = (+dataProducts[i].mainPrice + +dataProducts[i].taxes + +dataProducts[i].ads) - (+dataProducts[i].discount);
-            if(searchMode=='title' && dataProducts[i].title.includes(value.toLowerCase())){
-                table += createRow(i, dataProducts[i], total);
-            }
-            else if(searchMode=='category' && dataProducts[i].category.includes(value.toLowerCase())){
-                table += createRow(i, dataProducts[i], total);
-            }
+function search(value){
+    let table = '';
+    value = value.toLowerCase();
+    for(let i=0;i<dataProducts.length;i++){
+        let total = (+dataProducts[i].mainPrice + +dataProducts[i].taxes + +dataProducts[i].ads) - (+dataProducts[i].discount);
+        if(searchMode=='title' && dataProducts[i].title.includes(value)){
+            table += createRow(i, dataProducts[i], total);
         }
-
-        if (table === '') {
-            table = `
-                <tr>
-                    <td colspan="10" style="text-align:center; padding:10px; font-weight:bold; color:#bbb;">
-                        No Products Found!
-                    </td>
-                </tr>
-            `;
+        else if(searchMode=='category' && dataProducts[i].category.includes(value)){
+            table += createRow(i, dataProducts[i], total);
         }
-
-        document.getElementById("tbody").innerHTML = table;
     }
+
+    if (table === '') {
+        table = `
+            <tr>
+                <td colspan="10" style="text-align:center; padding:10px; font-weight:bold; color:#bbb;">
+                    No Products Found!
+                </td>
+            </tr>
+        `;
+    }
+
+    document.getElementById("tbody").innerHTML = table;
+}
+
 
     searchBox.addEventListener('input', ()=>search(searchBox.value));
 
