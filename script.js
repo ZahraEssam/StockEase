@@ -1,11 +1,9 @@
-//Core state (global) variables for product management 
-let dataProducts = [];  //array storing all products
-let isEditMode = false; //flag to track if we are editing an existing product
-let editIndex = null; //index of the product currently being edited
+// Core state (global) variables for product management 
+let dataProducts = [];  // array storing all products
+let isEditMode = false; // flag to track if we are editing an existing product
+let editIndex = null;   // index of the product currently being edited
 
 window.onload = function() {  
-
-    // get elements from html
     let title = document.getElementById("title");
     let mainPrice = document.getElementById("price");
     let taxes = document.getElementById("taxes");
@@ -17,11 +15,10 @@ window.onload = function() {
     let totalPrice = document.getElementById("totalprice");
 
     // load local storage
-    if (localStorage.products != null) {
+    if (localStorage.products != null && localStorage.products.length > 0) {
         dataProducts = JSON.parse(localStorage.products);
     }
 
-    // get total price
     function getTotalPrice() {
         if (mainPrice.value !== '') {
             let result = (+mainPrice.value + +taxes.value + +ads.value) - (+discount.value || 0);
@@ -37,7 +34,6 @@ window.onload = function() {
         input.addEventListener("input", getTotalPrice);
     });
 
-    // Create or Edit product
     createBtn.onclick = function () {
         let newProduct = {
             title: title.value.toLowerCase(),
@@ -50,7 +46,6 @@ window.onload = function() {
         };
 
         if (isEditMode) {
-            // Edit
             dataProducts[editIndex] = { ...newProduct, count: 1 }; 
             isEditMode = false;
             editIndex = null;
@@ -59,23 +54,21 @@ window.onload = function() {
             createBtn.classList.remove("btn-edit"); 
             localStorage.setItem('products', JSON.stringify(dataProducts));
             showProducts();
-            clearData(); // امسح الخانات بعد التعديل
+            clearData();
         } else {
-            // Create
             if(title.value != '' && mainPrice.value != '' && category.value != '') {
                 for (let i = 0; i < newProduct.count; i++) {
                     dataProducts.push({ ...newProduct });
                 }
                 localStorage.setItem('products', JSON.stringify(dataProducts));
                 showProducts();
-                clearData(); // امسح الخانات بعد الإضافة
+                clearData();
             } else {
-                alert("Please fill the Product Name, Price, and Category."); // يظهر فقط عند الإنشاء بدون العناصر الأساسية
+                alert("Please fill the Product Name, Price, and Category.");
             }
         }
     }
 
-    // clear inputs
     function clearData() {
         title.value = "";
         mainPrice.value = "";
@@ -88,55 +81,39 @@ window.onload = function() {
         totalPrice.style.background = "red";
     }
 
-    // read product
     function showProducts() {
         let table = '';
         for (let i = 0; i < dataProducts.length; i++) {
             let total = (+dataProducts[i].mainPrice + +dataProducts[i].taxes + +dataProducts[i].ads) - (+dataProducts[i].discount);
-            table += `
-                <tr> 
-                    <td>${i + 1}</td>
-                    <td>${dataProducts[i].title}</td>
-                    <td>${dataProducts[i].mainPrice}</td>
-                    <td>${dataProducts[i].taxes}</td>
-                    <td>${dataProducts[i].ads}</td>
-                    <td>${dataProducts[i].discount}</td>
-                    <td>${total}</td>
-                    <td>${dataProducts[i].category}</td>
-                    <td><button class="btn btn-edit" onclick="editProduct(${i})"><i class="bi bi-pencil-square"></i></button></td>
-                    <td><button class="btn btn-danger" onclick="deleteProduct(${i})"><i class="bi bi-trash"></i></button></td>
-                </tr>
-            `;
+            table += createRow(i, dataProducts[i], total);
         }
         document.getElementById("tbody").innerHTML = table;
 
         let btnDelete = document.getElementById("deleteall");
         if (dataProducts.length > 0) {
             btnDelete.innerHTML = ` 
-            <button onclick="deleteAll()" class="btn btn-danger"> 
+            <button id="deleteAllBtn" class="btn btn-danger"> 
             <i class="bi bi-trash"></i> Delete All (${dataProducts.length}) </button>`;
+            document.getElementById("deleteAllBtn").addEventListener("click", deleteAll);
         } else {
             btnDelete.innerHTML = "";
         }
     }
     showProducts();
 
-    // delete
-    window.deleteProduct = function(i) {
+    function deleteProduct(i) {
         dataProducts.splice(i, 1);
         localStorage.setItem('products', JSON.stringify(dataProducts));
         showProducts();
     }
 
-    // delete all
-    window.deleteAll = function() {
+    function deleteAll() {
         localStorage.clear();
         dataProducts = [];
         showProducts();
     }
 
-    // edit
-    window.editProduct = function(i) {
+    function editProduct(i) {
         title.value = dataProducts[i].title;
         mainPrice.value = dataProducts[i].mainPrice;
         taxes.value = dataProducts[i].taxes;
@@ -152,10 +129,23 @@ window.onload = function() {
         editIndex = i;
     }
 
-    //search
+    // attach event listeners for dynamic edit/delete buttons
+    document.getElementById('tbody').addEventListener('click', function(e){
+        if(e.target.closest('.btn-edit')){
+            let i = e.target.closest('tr').rowIndex - 1;
+            editProduct(i);
+        }
+        if(e.target.closest('.btn-danger')){
+            let i = e.target.closest('tr').rowIndex - 1;
+            deleteProduct(i);
+        }
+    });
+
+    // search
     let searchMode='title';
-    window.getSearchMode = function(id){
-        let searchBox=document.getElementById('search')
+    let searchBox=document.getElementById('search');
+
+    function getSearchMode(id){
         if(id=='searchByTitle'){
             searchMode='title';
         } else {
@@ -163,10 +153,12 @@ window.onload = function() {
         }
         searchBox.placeholder='search by ' +searchMode;
         searchBox.focus();
-        searchBox.value=""
+        searchBox.value="";
     }
+    document.getElementById('searchByTitle').addEventListener('click', ()=>getSearchMode('searchByTitle'));
+    document.getElementById('searchByCategory').addEventListener('click', ()=>getSearchMode('searchByCategory'));
 
-    window.search = function(value){
+    function search(value){
         let table = '';
         for(let i=0;i<dataProducts.length;i++){
             let total = (+dataProducts[i].mainPrice + +dataProducts[i].taxes + +dataProducts[i].ads) - (+dataProducts[i].discount);
@@ -191,6 +183,8 @@ window.onload = function() {
         document.getElementById("tbody").innerHTML = table;
     }
 
+    searchBox.addEventListener('input', ()=>search(searchBox.value));
+
     function createRow(i, product, total){
         return `
             <tr> 
@@ -202,10 +196,9 @@ window.onload = function() {
                 <td>${product.discount}</td>
                 <td>${total}</td>
                 <td>${product.category}</td>
-                <td><button class="btn btn-edit" onclick="editProduct(${i})"><i class="bi bi-pencil-square"></i></button></td>
-                <td><button class="btn btn-danger" onclick="deleteProduct(${i})"><i class="bi bi-trash"></i></button></td>
+                <td><button class="btn btn-edit"><i class="bi bi-pencil-square"></i></button></td>
+                <td><button class="btn btn-danger"><i class="bi bi-trash"></i></button></td>
             </tr>
         `;
     }
-
 }
