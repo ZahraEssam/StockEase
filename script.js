@@ -39,8 +39,10 @@ function getTotalPrice() {
 });
 
 // Create or Edit product
-createBtn.onclick = function () {
-    let newProduct = {
+window.onload = function() {
+    let createBtn = document.getElementById("createBtn");
+
+    createBtn.onclick = function() {    let newProduct = {
         title: title.value.toLowerCase(),
         mainPrice: mainPrice.value,
         taxes: taxes.value,
