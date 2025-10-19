@@ -1,4 +1,4 @@
-window.onload = function() {  
+لإwindow.onload = function() {  
 
 // get elements from html
 let title = document.getElementById("title");
@@ -56,6 +56,7 @@ createBtn.onclick = function () {
        ) {
         if (isEditMode) {
             // Edit
+             newProduct.count = 1;
             dataProducts[editIndex] = newProduct;
             isEditMode = false;
             editIndex = null;
