@@ -1,6 +1,6 @@
 # StockEase
 A simple and Inventory Management System built with pure **HTML**, **CSS**, and **JavaScript**.  
-It helps small shops or personal projects to **add(**create**),show(**read**) edit(**update**), **delete**, and **search** products easily.
+It helps small shops or personal projects to add (**create**),show (**read**) edit (**update**), **delete**, and **search** products easily.
 
 ---
 
