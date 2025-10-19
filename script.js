@@ -1,4 +1,4 @@
-لإwindow.onload = function() {  
+window.onload = function() {  
 
 // get elements from html
 let title = document.getElementById("title");
@@ -39,10 +39,8 @@ function getTotalPrice() {
 });
 
 // Create or Edit product
-window.onload = function() {
-    let createBtn = document.getElementById("createBtn");
-
-    createBtn.onclick = function() {    let newProduct = {
+createBtn.onclick = function () {
+    let newProduct = {
         title: title.value.toLowerCase(),
         mainPrice: mainPrice.value,
         taxes: taxes.value,
@@ -52,33 +50,28 @@ window.onload = function() {
         category: category.value.toLowerCase()
     };
 
-    if(title.value!=''
-        &&mainPrice.value!=''
-        &&category.value!=''
-       ) {
         if (isEditMode) {
             // Edit
-             newProduct.count = 1;
-            dataProducts[editIndex] = newProduct;
+            dataProducts[editIndex] = { ...newProduct, count: 1 }; 
             isEditMode = false;
             editIndex = null;
             createBtn.innerHTML = "Add Product";
             count.style.display = "block";
             createBtn.classList.remove("btn-edit"); 
+            clearData();
         } else {
             // Create
-            if (newProduct.count > 1) {
-                for (let i = 0; i < newProduct.count; i++) {
-                    dataProducts.push({ ...newProduct });
-                }
-            } else {
-                dataProducts.push(newProduct);
+                if(title.value!='' && mainPrice.value!='' && category.value!='') {
+            for (let i = 0; i < newProduct.count; i++) {
+                dataProducts.push({ ...newProduct });
             }
+            clearData();
+        localStorage.setItem('products', JSON.stringify(dataProducts));
+        showProducts();
         }
-    clearData();}
-
-    localStorage.setItem('products', JSON.stringify(dataProducts));
-    showProducts();
+        
+    }
+    
 }
 
 // clear inputs
@@ -228,4 +221,4 @@ function search(value){
         document.getElementById("tbody").innerHTML = table;
 }
 
-} 
+}
