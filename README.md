@@ -14,7 +14,7 @@ It helps small shops or personal projects to **add(create),show(read) edit(updat
 ---
 
 ## 🚀 Live Demo
-👉 [GitHub Pages Link]()
+👉 https://zahraessam.github.io/StockEase/
 
 ---
 
