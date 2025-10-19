@@ -53,7 +53,7 @@ createBtn.onclick = function () {
     if(title.value!=''
         &&mainPrice.value!=''
         &&category.value!=''
-        &&count.value<=1000) {
+       ) {
         if (isEditMode) {
             // Edit
             dataProducts[editIndex] = newProduct;
@@ -61,7 +61,7 @@ createBtn.onclick = function () {
             editIndex = null;
             createBtn.innerHTML = "Add Product";
             count.style.display = "block";
-            createBtn.classList.remove("btn-edit"); // يرجع بني
+            createBtn.classList.remove("btn-edit"); 
         } else {
             // Create
             if (newProduct.count > 1) {
