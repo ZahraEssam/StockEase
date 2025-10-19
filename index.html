@@ -15,10 +15,10 @@
             <div class="inputs">
                 <input title="title" placeholder="Product Name" type="text" id="title">
                 <div class="details">
-                    <input onKeyup="getTotalPrice()" title="price" placeholder="price" type="number" id="price" >
-                    <input onKeyup="getTotalPrice()" title="taxes" placeholder="taxes" type="number" id="taxes">
-                    <input onKeyup="getTotalPrice()" title="ads" placeholder="ads" type="number" id="ads">
-                    <input onKeyup="getTotalPrice()" title="discount" placeholder="discount" type="number" id="discount">
+                    <input addEventListener("input", getTotalPrice) title="price" placeholder="price" type="number" id="price" >
+                    <input addEventListener("input", getTotalPrice) title="taxes" placeholder="taxes" type="number" id="taxes">
+                    <input addEventListener("input", getTotalPrice) title="ads" placeholder="ads" type="number" id="ads">
+                    <input addEventListener("input", getTotalPrice) title="discount" placeholder="discount" type="number" id="discount">
                     <label> Total:</label> <small id="totalprice" > 0</small>
                 </div>
                 <select id="category">
@@ -35,7 +35,7 @@
                     <option value="Printer">Printer</option>
                 </select>
                 <input title="count" placeholder="count" id="count" type="number">
-                <button id="createBtn" onClick="">Add Product</button>
+                <button id="createBtn" >Add Product</button>
 
 
             </div>
