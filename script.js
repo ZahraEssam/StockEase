@@ -1,3 +1,5 @@
+window.onload = function() {  
+
 // get elements from html
 let title = document.getElementById("title");
 let mainPrice = document.getElementById("price");
@@ -23,14 +25,18 @@ if (localStorage.products != null) {
 // get total price
 function getTotalPrice() {
     if (mainPrice.value !== '') {
-        let result = (+mainPrice.value + +taxes.value + +ads.value) - (+discount.value);
-        totalPrice.innerHTML = result;
+        let result = (+mainPrice.value + +taxes.value + +ads.value) - (+discount.value || 0);
+        totalPrice.innerHTML = result.toFixed(2);
         totalPrice.style.background = "green";
     } else {
         totalPrice.innerHTML = 0;
         totalPrice.style.background = "red";
     }
 }
+
+[mainPrice, taxes, ads, discount].forEach(input => {
+    input.addEventListener("input", getTotalPrice);
+});
 
 // Create or Edit product
 createBtn.onclick = function () {
@@ -40,14 +46,14 @@ createBtn.onclick = function () {
         taxes: taxes.value,
         ads: ads.value,
         discount: discount.value,
-        count: count.value,
+        count: +count.value || 1, 
         category: category.value.toLowerCase()
     };
 
     if(title.value!=''
         &&mainPrice.value!=''
         &&category.value!=''
-        &&count<=1000) {
+        &&count.value<=1000) {
         if (isEditMode) {
             // Edit
             dataProducts[editIndex] = newProduct;
@@ -109,7 +115,7 @@ function showProducts() {
 
     let btnDelete = document.getElementById("deleteall");
     if (dataProducts.length > 0) {
-        btnDelete.innerHTML = `
+        btnDelete.innerHTML = ` 
         <button onclick="deleteAll()" class="btn btn-danger"> 
         <i class="bi bi-trash"></i> Delete All (${dataProducts.length}) </button>`;
     } else {
@@ -119,21 +125,21 @@ function showProducts() {
 showProducts();
 
 // delete
-function deleteProduct(i) {
+window.deleteProduct = function(i) {
     dataProducts.splice(i, 1);
     localStorage.setItem('products', JSON.stringify(dataProducts));
     showProducts();
 }
 
 // delete all
-function deleteAll() {
+window.deleteAll = function() {
     localStorage.clear();
     dataProducts = [];
     showProducts();
 }
 
 // edit
-function editProduct(i) {
+window.editProduct = function(i) {
     title.value = dataProducts[i].title;
     mainPrice.value = dataProducts[i].mainPrice;
     taxes.value = dataProducts[i].taxes;
@@ -148,6 +154,7 @@ function editProduct(i) {
     isEditMode = true;
     editIndex = i;
 }
+
 //search
 let searchMode='title';
 function getSearchMode(id){
@@ -161,7 +168,6 @@ function getSearchMode(id){
     searchBox.placeholder='search by ' +searchMode;
     searchBox.focus();
     searchBox.value=""
-
 }
 function search(value){
     let table = '';
@@ -218,3 +224,5 @@ function search(value){
     
         document.getElementById("tbody").innerHTML = table;
 }
+
+} 
